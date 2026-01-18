@@ -1,0 +1,45 @@
+server:
+  port: 8083
+  servlet:
+    # This automatically prefixes EVERY controller in your app
+    context-path: /api/v1
+
+spring:
+  application:
+    name: blog-application
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spring_blog_service
+    username: postgres
+    password: Root@1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/spring_boot_blog_app
+      auto-index-creation: true  # This is required for @Indexed to work
+
+api:
+  v1: /api/v1
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+mail:
+  host: smtp.mailtrap.io # or smtp.gmail.com
+  port: 2525 # 587 for Gmail
+  username: your_username
+  password: your_password
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
