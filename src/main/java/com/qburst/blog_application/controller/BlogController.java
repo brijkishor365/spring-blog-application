@@ -2,7 +2,7 @@ package com.qburst.blog_application.controller;
 
 import com.qburst.blog_application.dto.request.blog.BlogAddRequest;
 import com.qburst.blog_application.dto.response.blog.BlogResponse;
-import com.qburst.blog_application.service.blog.BlogService;
+import com.qburst.blog_application.service.blog.Impl.BlogServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BlogController {
 
-    private final BlogService blogService;
+    private final BlogServiceImpl blogService;
 
     @PostMapping
     public ResponseEntity<BlogResponse> createBlog(@Valid @RequestBody BlogAddRequest request) {

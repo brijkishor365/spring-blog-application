@@ -4,14 +4,13 @@ import com.qburst.blog_application.dto.request.auth.LoginRequest;
 import com.qburst.blog_application.dto.request.auth.ResetPasswordRequest;
 import com.qburst.blog_application.dto.response.user.UserAddResponse;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.qburst.blog_application.dto.response.auth.AuthResponse;
 import com.qburst.blog_application.dto.request.user.UserAddRequest;
-import com.qburst.blog_application.service.UserService;
+import com.qburst.blog_application.service.user.Impl.UserService;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

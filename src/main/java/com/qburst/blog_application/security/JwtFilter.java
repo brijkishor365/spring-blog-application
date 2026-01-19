@@ -2,7 +2,13 @@ package com.qburst.blog_application.security;
 
 import java.io.IOException;
 
+import com.qburst.blog_application.exception.auth.JwtAuthenticationException;
+import com.qburst.blog_application.exception.base.JwtErrorType;
 import com.qburst.blog_application.repository.BlacklistedTokenRepository;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.lang.NonNull;
@@ -69,6 +75,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token is missing");
             return;
         }
 
@@ -111,10 +119,41 @@ public class JwtFilter extends OncePerRequestFilter {
                     MDC.put("userId", "333");
                 }
             }
-        } catch (JwtException ex) {
-            log.error("Invalid JWT token", ex);
-        } finally {
-            MDC.clear(); // Ensure the logs stay clean for the next request
+        } catch (ExpiredJwtException ex) {
+            log.warn("JWT expired at {}", ex.getClaims().getExpiration());
+            throw new JwtAuthenticationException(
+                    JwtErrorType.EXPIRED,
+                    "JWT expired",
+                    ex
+            );
+        } catch (UnsupportedJwtException ex) {
+            log.error("JWT unsupported", ex);
+            throw new JwtAuthenticationException(
+                    JwtErrorType.UNSUPPORTED,
+                    "JWT unsupported",
+                    ex
+            );
+        } catch (MalformedJwtException ex) {
+            log.error("JWT malformed", ex);
+            throw new JwtAuthenticationException(
+                    JwtErrorType.MALFORMED,
+                    "JWT malformed",
+                    ex
+            );
+        } catch (SignatureException ex) {
+            log.error("JWT signature invalid (token tampered)", ex);
+            throw new JwtAuthenticationException(
+                    JwtErrorType.SIGNATURE_INVALID,
+                    "JWT signature invalid",
+                    ex
+            );
+        } catch (IllegalArgumentException ex) {
+            log.error("JWT token is empty or null", ex);
+            throw new JwtAuthenticationException(
+                    JwtErrorType.EMPTY,
+                    "JWT token is empty or null",
+                    ex
+            );
         }
 
         filterChain.doFilter(request, response);

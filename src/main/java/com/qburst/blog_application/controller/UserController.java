@@ -19,7 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import com.qburst.blog_application.service.UserService;
+import com.qburst.blog_application.service.user.Impl.UserService;
 
 @Slf4j
 @RestController
@@ -64,5 +64,13 @@ public class UserController {
 
         UserResponse updatedUser = userService.updateProfile(userDetails.getUsername(), request);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Boolean> deleteUser(@PathVariable Long userId) {
+        log.info("Request to delete user with ID: {}", userId);
+        userService.deleteUser(userId);
+
+        return ResponseEntity.noContent().build();
     }
 }

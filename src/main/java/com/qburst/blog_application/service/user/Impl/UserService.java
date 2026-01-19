@@ -1,4 +1,4 @@
-package com.qburst.blog_application.service;
+package com.qburst.blog_application.service.user.Impl;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -11,7 +11,9 @@ import com.qburst.blog_application.dto.response.user.UserAddResponse;
 import com.qburst.blog_application.dto.response.user.UserListResponse;
 import com.qburst.blog_application.dto.response.user.UserResponse;
 import com.qburst.blog_application.dto.request.user.UserUpdateRequest;
-import com.qburst.blog_application.exception.*;
+import com.qburst.blog_application.exception.auth.*;
+import com.qburst.blog_application.exception.user.UserNameAlreadyExistsException;
+import com.qburst.blog_application.exception.user.UserNotFoundException;
 import com.qburst.blog_application.mapper.UserMapper;
 import com.qburst.blog_application.repository.BlacklistedTokenRepository;
 import com.qburst.blog_application.service.email.EmailService;
@@ -115,9 +117,20 @@ public class UserService implements UserServiceInterface {
     @Override
     public UserResponse getUser(Long userId) {
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found!: " + userId));
 
         return this.modelMapper.map(user, UserResponse.class);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long userId) {
+
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + userId));
+        userRepository.delete(user);
+
+        log.info("Successfully deleted user with ID: {}", userId);
     }
 
     public AuthResponse authenticate(LoginRequest request) {
