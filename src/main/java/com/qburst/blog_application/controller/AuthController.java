@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.qburst.blog_application.dto.response.auth.AuthResponse;
 import com.qburst.blog_application.dto.request.user.UserAddRequest;
-import com.qburst.blog_application.service.user.Impl.UserService;
+import com.qburst.blog_application.service.user.Impl.UserServiceImpl;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +20,9 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private UserService userService;
+    private UserServiceImpl userService;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserServiceImpl userService) {
         this.userService = userService;
     }
 

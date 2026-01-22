@@ -6,7 +6,7 @@ import com.qburst.blog_application.dto.response.user.UserResponse;
 import com.qburst.blog_application.dto.request.user.UserAddRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 
-public interface UserServiceInterface {
+public interface UserService {
 
     UserAddResponse registerUser(UserAddRequest user) throws Exception;
 

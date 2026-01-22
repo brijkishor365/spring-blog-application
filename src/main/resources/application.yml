@@ -43,3 +43,11 @@ mail:
         auth: true
         starttls:
           enable: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,metrics,prometheus" # Pick specific ones
+  endpoint:
+    health:
+      show-details: always # Shows disk space, DB connection status, etc.

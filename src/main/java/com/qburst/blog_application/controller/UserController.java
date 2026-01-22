@@ -3,6 +3,7 @@ package com.qburst.blog_application.controller;
 import com.qburst.blog_application.dto.response.user.UserListResponse;
 import com.qburst.blog_application.dto.response.user.UserResponse;
 import com.qburst.blog_application.dto.request.user.UserUpdateRequest;
+import com.qburst.blog_application.service.user.Impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +20,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import com.qburst.blog_application.service.user.Impl.UserService;
-
 @Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor // Automatically generates the constructor for all 'final' fields
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")

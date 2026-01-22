@@ -34,7 +34,7 @@ public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
                 case BLACKLISTED -> message = "Token is blacklisted";
             }
         } else if (authException instanceof InsufficientAuthenticationException) {
-            message = "Full authentication is required to access this resource";
+            message = "Full authentication is required to access this resources...";
         }
 
         ApiError error = ApiError.builder()

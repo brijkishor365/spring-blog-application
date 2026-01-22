@@ -18,7 +18,6 @@ import com.qburst.blog_application.mapper.UserMapper;
 import com.qburst.blog_application.repository.BlacklistedTokenRepository;
 import com.qburst.blog_application.service.email.EmailService;
 import com.qburst.blog_application.service.jwt.JwtService;
-import com.qburst.blog_application.service.user.UserServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-public class UserService implements UserServiceInterface {
+public class UserServiceImpl implements com.qburst.blog_application.service.user.UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -64,7 +63,7 @@ public class UserService implements UserServiceInterface {
 
     private final UserMapper userMapper;
 
-    public UserService(UserMapper userMapper, EmailService emailService, BlacklistedTokenRepository blacklistedTokenRepository) {
+    public UserServiceImpl(UserMapper userMapper, EmailService emailService, BlacklistedTokenRepository blacklistedTokenRepository) {
         this.userMapper = userMapper;
         this.emailService = emailService;
         this.blacklistedTokenRepository = blacklistedTokenRepository;
