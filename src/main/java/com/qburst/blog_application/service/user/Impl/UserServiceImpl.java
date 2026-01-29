@@ -7,10 +7,9 @@ import java.util.Random;
 
 import com.qburst.blog_application.Document.BlacklistedToken;
 import com.qburst.blog_application.dto.request.auth.LoginRequest;
-import com.qburst.blog_application.dto.response.user.UserAddResponse;
+import com.qburst.blog_application.dto.request.user.UserRequest;
 import com.qburst.blog_application.dto.response.user.UserListResponse;
 import com.qburst.blog_application.dto.response.user.UserResponse;
-import com.qburst.blog_application.dto.request.user.UserUpdateRequest;
 import com.qburst.blog_application.exception.auth.*;
 import com.qburst.blog_application.exception.user.UserNameAlreadyExistsException;
 import com.qburst.blog_application.exception.user.UserNotFoundException;
@@ -18,6 +17,7 @@ import com.qburst.blog_application.mapper.UserMapper;
 import com.qburst.blog_application.repository.BlacklistedTokenRepository;
 import com.qburst.blog_application.service.email.EmailService;
 import com.qburst.blog_application.service.jwt.JwtService;
+import com.qburst.blog_application.service.user.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,7 +32,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.qburst.blog_application.dto.response.auth.AuthResponse;
-import com.qburst.blog_application.dto.request.user.UserAddRequest;
 import com.qburst.blog_application.entity.UserEntity;
 import com.qburst.blog_application.repository.UserRepository;
 
@@ -41,47 +40,48 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-public class UserServiceImpl implements com.qburst.blog_application.service.user.UserService {
+public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtService jwtService;
-
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     private final BlacklistedTokenRepository blacklistedTokenRepository;
-
     private final EmailService emailService;
-
     private final UserMapper userMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserMapper userMapper, EmailService emailService, BlacklistedTokenRepository blacklistedTokenRepository) {
-        this.userMapper = userMapper;
-        this.emailService = emailService;
+    public UserServiceImpl(
+            UserRepository userRepository,
+            ModelMapper modelMapper,
+            AuthenticationManager authenticationManager,
+            JwtService jwtService,
+            BlacklistedTokenRepository blacklistedTokenRepository,
+            EmailService emailService,
+            UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
         this.blacklistedTokenRepository = blacklistedTokenRepository;
+        this.emailService = emailService;
+        this.userMapper = userMapper;
+        this.passwordEncoder = new BCryptPasswordEncoder(12);
     }
 
     @Override
     @Transactional
-    public UserAddResponse registerUser(UserAddRequest userAddRequest) throws Exception {
+    public UserResponse registerUser(UserRequest userRequest) throws Exception {
 
-        List<UserEntity> list = userRepository.findUserByUsername(userAddRequest.username());
+        List<UserEntity> list = userRepository.findUserByUsername(userRequest.username());
 
         if (!list.isEmpty()) {
-            throw new UserNameAlreadyExistsException("Username '" + userAddRequest.username() + "' is already taken.");
+            throw new UserNameAlreadyExistsException("Username '" + userRequest.username() + "' is already taken.");
         }
 
-        UserEntity userEntity = userMapper.toEntity(userAddRequest);
+        UserEntity userEntity = userMapper.toEntity(userRequest);
 
-        userEntity.setPassword(passwordEncoder.encode(userAddRequest.password()));
+        userEntity.setPassword(passwordEncoder.encode(userRequest.password()));
         userEntity.setRoles("ROLE_USER");
 
         UserEntity savedUser = userRepository.save(userEntity);
@@ -156,7 +156,7 @@ public class UserServiceImpl implements com.qburst.blog_application.service.user
     }
 
     @Transactional
-    public UserResponse updateProfile(String username, UserUpdateRequest userUpdateRequest) {
+    public UserResponse updateProfile(String username, UserRequest userUpdateRequest) {
         // Find the existing user or throw exception
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + username));

@@ -1,8 +1,8 @@
 package com.qburst.blog_application.controller;
 
+import com.qburst.blog_application.dto.request.user.UserRequest;
 import com.qburst.blog_application.dto.response.user.UserListResponse;
 import com.qburst.blog_application.dto.response.user.UserResponse;
-import com.qburst.blog_application.dto.request.user.UserUpdateRequest;
 import com.qburst.blog_application.service.user.Impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +59,7 @@ public class UserController {
     @PutMapping(value = "/me", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserResponse> updateAdminProfile(
             @AuthenticationPrincipal UserDetails userDetails,
-            @Valid @RequestBody UserUpdateRequest request) {
+            @Valid @RequestBody UserRequest request) {
 
         UserResponse updatedUser = userService.updateProfile(userDetails.getUsername(), request);
         return ResponseEntity.ok(updatedUser);

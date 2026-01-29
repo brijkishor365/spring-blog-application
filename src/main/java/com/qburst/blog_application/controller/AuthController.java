@@ -2,14 +2,14 @@ package com.qburst.blog_application.controller;
 
 import com.qburst.blog_application.dto.request.auth.LoginRequest;
 import com.qburst.blog_application.dto.request.auth.ResetPasswordRequest;
-import com.qburst.blog_application.dto.response.user.UserAddResponse;
+import com.qburst.blog_application.dto.response.user.UserResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.qburst.blog_application.dto.response.auth.AuthResponse;
-import com.qburst.blog_application.dto.request.user.UserAddRequest;
+import com.qburst.blog_application.dto.request.user.UserRequest;
 import com.qburst.blog_application.service.user.Impl.UserServiceImpl;
 
 import org.springframework.http.MediaType;
@@ -29,7 +29,7 @@ public class AuthController {
     @PostMapping(value = "/register", produces = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<UserAddResponse> register(@Valid @RequestBody UserAddRequest request) throws Exception {
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRequest request) throws Exception {
         return new ResponseEntity<>(userService.registerUser(request), HttpStatus.CREATED);
     }
 

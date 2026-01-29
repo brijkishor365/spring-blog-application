@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record UserAddRequest(
+public record UserRequest(
         Long id,
 
         @NotBlank(message = "Username is required")
